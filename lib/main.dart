@@ -9,6 +9,7 @@ import 'core/services/firestore_service.dart';
 import 'core/services/cache_service.dart';
 import 'core/providers/wallpaper_provider.dart';
 import 'features/home/presentation/pages/home_page.dart';
+import 'features/splash/presentation/pages/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +61,11 @@ class WallMuseApp extends ConsumerWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-          home: const HomePage(),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/home': (context) => const HomePage(),
+          },
         );
       },
     );

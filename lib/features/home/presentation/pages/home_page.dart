@@ -113,11 +113,11 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
           
           // Top bar buttons with glassmorphism effect
           if (_selectedIndex != 1)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 2,
-              right: 16,
-              child: Row(
-                children: [
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 2,
+            right: 16,
+            child: Row(
+              children: [
                   // _buildGlassButton(
                   //   icon: Icons.search,
                   //   onPressed: () {
@@ -128,20 +128,20 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
                   //   },
                   // ),
                   // SizedBox(width: 2.w),
-                  _buildGlassButton(
-                    icon: Icons.settings_rounded,
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                        CupertinoPageRoute(
-                          builder: (context) => const SettingsTab(),
-                          settings: const RouteSettings(name: '/settings'),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                _buildGlassButton(
+                  icon: Icons.settings_rounded,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const SettingsTab(),
+                        settings: const RouteSettings(name: '/settings'),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
+          ),
         ],
       ),
       ),

@@ -67,7 +67,7 @@ class _CategoryWallpapersPageState extends ConsumerState<CategoryWallpapersPage>
         error: (error, stack) => Center(child: Text('Failed to load wallpapers: $error')),
       );
     } else {
-      final wallpapersState = ref.watch(pexelsCategoryWallpapersProvider(widget.category.name));
+    final wallpapersState = ref.watch(pexelsCategoryWallpapersProvider(widget.category.name));
       if (wallpapersState.isLoading && wallpapersState.wallpapers.isEmpty) {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,

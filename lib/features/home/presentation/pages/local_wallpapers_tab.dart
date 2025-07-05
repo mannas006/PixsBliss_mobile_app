@@ -103,23 +103,23 @@ class _UserUploadsTabState extends ConsumerState<UserUploadsTab> with AutomaticK
                               // Shuffle the trendingWallpapers list for random order
                               final shuffledTrending = List<Wallpaper>.from(trendingWallpapers)..shuffle();
                               return ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 10.w),
                                 itemCount: shuffledTrending.length,
-                                itemBuilder: (context, index) {
+                            itemBuilder: (context, index) {
                                   final wallpaper = shuffledTrending[index];
-                                  return Padding(
-                                    padding: index == 0
-                                    ? EdgeInsets.only(left: 10.w, right: 10.w)
-                                    : EdgeInsets.only(right: 10.w),
-                                    child: SizedBox(
-                                      width: 90.w,
-                                      height: 140.h,
-                                      child: WallpaperCard(
-                                        wallpaper: wallpaper,
-                                        heightFactor: 0.5,
-                                      ),
-                                    ),
+                              return Padding(
+                                padding: index == 0
+                                ? EdgeInsets.only(left: 10.w, right: 10.w)
+                                : EdgeInsets.only(right: 10.w),
+                                child: SizedBox(
+                                  width: 90.w,
+                                  height: 140.h,
+                                  child: WallpaperCard(
+                                    wallpaper: wallpaper,
+                                    heightFactor: 0.5,
+                                  ),
+                                ),
                                   );
                                 },
                               );
@@ -384,31 +384,31 @@ class WallpapersSkeletonLoader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: MasonryGridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 20.h,
-        crossAxisSpacing: 20.w,
+          crossAxisCount: 2,
+          mainAxisSpacing: 20.h,
+          crossAxisSpacing: 20.w,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 8, // Show 8 skeleton tiles
         itemBuilder: (context, index) {
           final size = switch (index % 5) {
-            0 => 1.2,
-            1 => 0.8,
+              0 => 1.2,
+              1 => 0.8,
             2 => 1.0,
             3 => 0.9,
             _ => 1.1,
-          };
+            };
           return Shimmer.fromColors(
             baseColor: Colors.grey[800]!,
             highlightColor: Colors.grey[700]!,
-            child: Container(
+              child: Container(
               height: 300.h * size,
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
+                decoration: BoxDecoration(
+                  color: Colors.grey[800],
                 borderRadius: BorderRadius.circular(25),
+                ),
               ),
-            ),
-          );
+            );
         },
       ),
     );

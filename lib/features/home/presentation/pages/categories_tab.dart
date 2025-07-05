@@ -76,19 +76,19 @@ class _CategoriesTabState extends ConsumerState<CategoriesTab>
       return Container(
         color: theme.scaffoldBackgroundColor,
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
               Text("Error: \\${pexelsCategoriesState.error ?? firestoreCategoriesState.error}"),
-              const SizedBox(height: 16),
-              ElevatedButton(
+            const SizedBox(height: 16),
+            ElevatedButton(
                 onPressed: () {
                   ref.read(pexelsCategoriesProvider.notifier).loadCategories();
                   ref.read(firestoreCategoriesProvider.notifier).loadCategories();
                 },
-                child: const Text("Retry"),
-              ),
-            ],
+              child: const Text("Retry"),
+            ),
+          ],
           ),
         ),
       );
@@ -104,31 +104,31 @@ class _CategoriesTabState extends ConsumerState<CategoriesTab>
       color: theme.scaffoldBackgroundColor,
       child: ListView.builder(
         itemCount: allCategories.length,
-        itemBuilder: (context, index) {
+      itemBuilder: (context, index) {
           final category = allCategories[index];
           final isFirebaseCategory = index < firestoreCategories.length;
-          // Use a memoized future per category per day
+        // Use a memoized future per category per day
           if (isFirebaseCategory) {
             _firebaseCategoryImageFutures[category.id] ??= _getFirebaseCategoryWallpaperUrl(category.id);
           } else {
-            _imageFutures[category.id] ??= _getDailyCategoryImage(category.name, category.id);
+        _imageFutures[category.id] ??= _getDailyCategoryImage(category.name, category.id);
           }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
                     builder: (context) => CategoryWallpapersPage(
                       category: category,
                       isFirebaseCategory: isFirebaseCategory,
                     ),
-                  ),
-                );
-              },
-              child: Stack(
-                children: [
+                ),
+              );
+            },
+            child: Stack(
+              children: [
                   isFirebaseCategory
                     ? FutureBuilder<String?>(
                         future: _firebaseCategoryImageFutures[category.id],
@@ -200,109 +200,109 @@ class _CategoriesTabState extends ConsumerState<CategoriesTab>
                         },
                       )
                     : FutureBuilder<String?>(
-                        future: _imageFutures[category.id],
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey[800]!,
-                              highlightColor: Colors.grey[700]!,
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            );
-                          }
-                          final imageUrl = snapshot.data;
-                          if (imageUrl == null) {
-                            // fallback to gradient if no image
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(int.parse(category.color.replaceFirst('#', '0xff'))),
-                                    Color(int.parse(category.color.replaceFirst('#', '0xff'))).withOpacity(0.7),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                            );
-                          }
-                          return CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            imageBuilder: (context, imageProvider) => Container(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[800]!,
-                              highlightColor: Colors.grey[700]!,
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.grey[900],
-                              ),
-                              child: const Icon(Icons.broken_image, color: Colors.white),
-                            ),
-                            fadeInDuration: const Duration(milliseconds: 400),
-                          );
-                        },
+                  future: _imageFutures[category.id],
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[800]!,
+                        highlightColor: Colors.grey[700]!,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      );
+                    }
+                    final imageUrl = snapshot.data;
+                    if (imageUrl == null) {
+                      // fallback to gradient if no image
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(int.parse(category.color.replaceFirst('#', '0xff'))),
+                              Color(int.parse(category.color.replaceFirst('#', '0xff'))).withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                      );
+                    }
+                    return CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.black54,
-                          Colors.transparent,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[800]!,
+                        highlightColor: Colors.grey[700]!,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[900],
+                        ),
+                        child: const Icon(Icons.broken_image, color: Colors.white),
+                      ),
+                      fadeInDuration: const Duration(milliseconds: 400),
+                    );
+                  },
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Colors.black54,
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 20,
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  child: Center(
+                    child: Text(
+                      category.name.toUpperCase(),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Raleway',
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 8,
+                          ),
                         ],
                       ),
                     ),
                   ),
-                  Positioned(
-                    left: 20,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    child: Center(
-                      child: Text(
-                        category.name.toUpperCase(),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Raleway',
-                          shadows: [
-                            Shadow(
-                              color: Colors.black54,
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
+              ],
               ),
             ),
           );
