@@ -303,7 +303,7 @@ class _ExploreTabState extends ConsumerState<ExploreTab>
             // Title with settings
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 65.h, 20.w, 4.h),
+                padding: EdgeInsets.fromLTRB(20.w, 70.h, 20.w, 4.h),
                 child: Text(
                   'Featured Wall ✨',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
