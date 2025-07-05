@@ -1,0 +1,36 @@
+name: "🎯 Build & Upload APK"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  android-build:
+    name: "🎉 Android Build"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk PixsBliss.apk
+
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: PixsBliss.apk
+          asset_name: PixsBliss.apk
+          tag: v1.0
+          overwrite: true 
