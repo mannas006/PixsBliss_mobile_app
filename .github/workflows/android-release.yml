@@ -32,5 +32,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: PixsBliss.apk
           asset_name: PixsBliss.apk
-          tag: v1.0
+          tag: v1.0.0
           overwrite: true 
