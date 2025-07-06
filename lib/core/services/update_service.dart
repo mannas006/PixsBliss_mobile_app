@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:install_plugin/install_plugin.dart';
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -170,9 +170,9 @@ class UpdateService {
   Future<bool> installApk(String apkPath) async {
     try {
       if (Platform.isAndroid) {
-        // Use install_plugin for Android
-        final result = await InstallPlugin.installApk(apkPath);
-        return result['isSuccess'] == true;
+        // Use open_file to trigger the system package installer
+        final result = await OpenFile.open(apkPath);
+        return result.type == ResultType.done;
       } else {
         // Use open_file for other platforms (for testing)
         final result = await OpenFile.open(apkPath);

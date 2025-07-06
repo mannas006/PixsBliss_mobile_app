@@ -12,16 +12,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.32.5'
 
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Clean build cache
+        run: flutter clean
+
       - name: Build release APK
         run: flutter build apk --release
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
 
       - name: Rename APK
         run: mv build/app/outputs/flutter-apk/app-release.apk PixsBliss.apk
