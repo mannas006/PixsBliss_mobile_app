@@ -7,11 +7,12 @@ class ButtonAnimation extends StatefulWidget {
   final bool isComplete;
   final double borderRadius;
   final String buttonText;
+  final bool isEnabled;
 
   const ButtonAnimation(
     this.primaryColor,
     this.darkPrimaryColor,
-    {required this.onDownload, required this.isComplete, this.borderRadius = 12.0, this.buttonText = "Download", Key? key}
+    {required this.onDownload, required this.isComplete, this.borderRadius = 12.0, this.buttonText = "Download", this.isEnabled = true, Key? key}
   ) : super(key: key);
 
   @override
@@ -92,17 +93,20 @@ class _ButtonAnimationState extends State<ButtonAnimation> with TickerProviderSt
   @override
   void didUpdateWidget(covariant ButtonAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
+    debugPrint('ButtonAnimation didUpdateWidget: isComplete=${widget.isComplete}, animationComplete=$animationComplete');
     if (widget.isComplete && !animationComplete) {
       setState(() {
         animationComplete = true;
         barColorOpacity = 0.0;
       });
+      debugPrint('ButtonAnimation: animationComplete set to true');
     }
     if (!widget.isComplete && animationComplete) {
       setState(() {
         animationComplete = false;
         barColorOpacity = .6;
       });
+      debugPrint('ButtonAnimation: animationComplete reset to false');
     }
   }
 
@@ -115,12 +119,11 @@ class _ButtonAnimationState extends State<ButtonAnimation> with TickerProviderSt
           builder: (context, child) => Transform.scale(
             scale: _scaleAnimation.value,
             child: InkWell(
-              onTap: () {
-                if (!animationComplete) {
-                  widget.onDownload();
-                  _scaleAnimationController.forward();
-                }
-              },
+              onTap: widget.isEnabled && !animationComplete ? () {
+                debugPrint('Button tapped!');
+                widget.onDownload();
+                _scaleAnimationController.forward();
+              } : null,
               child: Container(
                 width: 200,
                 height: 50,

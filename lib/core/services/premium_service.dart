@@ -1,6 +1,7 @@
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer';
+import 'dart:async';
 
 class PremiumService {
   static final PremiumService _instance = PremiumService._internal();
@@ -13,6 +14,9 @@ class PremiumService {
 
   // Razorpay configuration
   static const String _razorpayKeyId = 'rzp_test_G189rYNiSIRUzR';
+
+  final StreamController<String> _unlockController = StreamController.broadcast();
+  Stream<String> get unlockStream => _unlockController.stream;
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -79,7 +83,7 @@ class PremiumService {
 
   /// Handle successful payment
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    log('Payment successful: ${response.paymentId}');
+    log('Payment successful: [32m${response.paymentId}[0m');
     
     // Get the pending unlock wallpaper ID
     final wallpaperId = _prefs.getString('pending_unlock');
@@ -87,6 +91,7 @@ class PremiumService {
       // Mark wallpaper as unlocked
       await _prefs.setBool('unlocked_$wallpaperId', true);
       _prefs.remove('pending_unlock');
+      _unlockController.add(wallpaperId); // Notify listeners
       
       log('Wallpaper $wallpaperId unlocked successfully');
     }
@@ -150,5 +155,6 @@ class PremiumService {
     if (_isInitialized) {
       _razorpay.clear();
     }
+    _unlockController.close();
   }
 } 

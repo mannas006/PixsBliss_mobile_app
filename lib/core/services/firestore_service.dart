@@ -147,7 +147,7 @@ class FirestoreService {
           .collection('wallpapers')
           .where('trending', isEqualTo: true)
           // .orderBy('createdAt', descending: true) // Removed ordering to support missing createdAt
-          .limit(10)
+          .limit(20)
           .get();
 
       return querySnapshot.docs.map((doc) {

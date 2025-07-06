@@ -11,6 +11,7 @@ import 'button_animation.dart';
 import '../../../../core/models/wallpaper.dart';
 import '../../../../core/services/firestore_service.dart';
 import '../../../../core/services/premium_service.dart';
+import 'dart:async';
 
 class WallpaperDetailPage extends ConsumerStatefulWidget {
   final Wallpaper wallpaper;
@@ -34,6 +35,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
   bool _downloadComplete = false;
   bool _isUnlocked = false;
   bool _isCheckingUnlockStatus = true;
+  StreamSubscription<String>? _unlockSub;
 
   @override
   void initState() {
@@ -52,6 +54,17 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
 
     // Check unlock status
     _checkUnlockStatus();
+
+    _unlockSub = PremiumService().unlockStream.listen((wallpaperId) {
+      if (wallpaperId == widget.wallpaper.id && mounted) {
+        setState(() {
+          _isUnlocked = true;
+          _downloadComplete = false;
+        });
+        debugPrint('UNLOCK EVENT: _isUnlocked=$_isUnlocked, _downloadComplete=$_downloadComplete');
+        _showSuccessMessage('Wallpaper unlocked successfully! You can now download it.');
+      }
+    });
   }
 
   Future<void> _checkUnlockStatus() async {
@@ -69,6 +82,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
 
   @override
   void dispose() {
+    _unlockSub?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -83,6 +97,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
   }
 
   VoidCallback? get _buttonAction {
+    debugPrint('buttonAction: _isCheckingUnlockStatus=$_isCheckingUnlockStatus, _isPremium=$_isPremium, _isUnlocked=$_isUnlocked');
     if (_isCheckingUnlockStatus) return null;
     if (_isPremium && !_isUnlocked) return _unlockWallpaper;
     return _downloadWallpaper;
@@ -90,6 +105,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('BUILD: _isUnlocked=$_isUnlocked, _isPremium=$_isPremium, _isCheckingUnlockStatus=$_isCheckingUnlockStatus, _canDownload=$_canDownload');
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -228,12 +244,14 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
                   // Action Buttons Row
                   Center(
                     child: ButtonAnimation(
+                      key: ValueKey(_isUnlocked),
                       Colors.white.withOpacity(0.15), // Glass color
                       Colors.white.withOpacity(0.25), // Slightly more opaque for the bar
                       onDownload: _buttonAction ?? () {},
                       isComplete: _downloadComplete,
                       borderRadius: 24.0, // Pass this to ButtonAnimation for more rounding
                       buttonText: _buttonText,
+                      isEnabled: !_isCheckingUnlockStatus && !_isDownloading,
                     ),
                   ),
                 ],
@@ -356,6 +374,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
   }
 
   Future<void> _downloadWallpaper() async {
+    debugPrint('Download wallpaper tapped!');
     final status = await Permission.storage.request();
     if (!status.isGranted) {
       _showErrorMessage('Storage permission denied');
@@ -520,6 +539,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
   }
 
   Future<void> _unlockWallpaper() async {
+    debugPrint('_unlockWallpaper called');
     try {
       final premiumService = PremiumService();
       await premiumService.init();
