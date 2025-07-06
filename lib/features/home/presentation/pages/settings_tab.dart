@@ -149,41 +149,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
 
                 SizedBox(height: 24.h),
 
-                // Storage Section
-                _buildSectionHeader('Storage'),
-                SizedBox(height: 12.h),
-                _buildSettingsCard([
-                  _buildSettingsTile(
-                    icon: MdiIcons.broom,
-                    title: 'Clear Cache',
-                    subtitle: 'Free up storage space',
-                    trailing: Icon(
-                      MdiIcons.chevronRight,
-                      color: AppColors.grey400,
-                    ),
-                    onTap: () => _showClearCacheDialog(),
-                  ),
-                  _buildSettingsTile(
-                    icon: MdiIcons.database,
-                    title: 'Cache Size',
-                    subtitle: _isCalculatingCache
-                        ? 'Calculating...'
-                        : (_cacheSize != null
-                            ? 'Total Cache Size: $_cacheSize'
-                            : 'Tap to calculate'),
-                    trailing: _isCalculatingCache
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : null,
-                    onTap: _isCalculatingCache ? null : _calculateCacheSize,
-                  ),
-                ]),
-
-                SizedBox(height: 24.h),
-
                 // Privacy Section
                 _buildSectionHeader('Privacy'),
                 SizedBox(height: 12.h),
