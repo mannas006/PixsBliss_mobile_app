@@ -21,16 +21,20 @@ class UpdateInfo {
   });
 
   factory UpdateInfo.fromJson(Map<String, dynamic> json) {
+    String changelog = json['changelog'] ?? '';
+    // Handle escaped newlines
+    changelog = changelog.replaceAll('\\n', '\n');
+    
     return UpdateInfo(
       version: json['version'] ?? '',
       apkUrl: json['apk_url'] ?? '',
-      changelog: json['changelog'] ?? '',
+      changelog: changelog,
     );
   }
 }
 
 class UpdateService {
-  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/main/update.json';
+  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json?token=GHSAT0AAAAAADGDJGLZTUE4TKGC3ET2JHP22DK3ZOA';
   final Dio _dio = Dio();
 
   /// Check for available updates
@@ -38,7 +42,17 @@ class UpdateService {
     try {
       final response = await _dio.get(_updateUrl);
       if (response.statusCode == 200) {
-        final updateInfo = UpdateInfo.fromJson(response.data);
+        // Handle both string and Map responses
+        Map<String, dynamic> jsonData;
+        if (response.data is String) {
+          // Parse string response as JSON
+          jsonData = json.decode(response.data as String);
+        } else {
+          // Response is already a Map
+          jsonData = response.data as Map<String, dynamic>;
+        }
+        
+        final updateInfo = UpdateInfo.fromJson(jsonData);
         final currentVersion = await _getCurrentVersion();
         
         if (isNewerVersion(updateInfo.version, currentVersion)) {
