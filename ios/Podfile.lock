@@ -1378,8 +1378,6 @@ PODS:
   - gRPC-Core/Interface (1.69.0)
   - gRPC-Core/Privacy (1.69.0)
   - GTMSessionFetcher/Core (4.5.0)
-  - install_plugin (2.0.0):
-    - Flutter
   - leveldb-library (1.22.6)
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
@@ -1418,7 +1416,6 @@ DEPENDENCIES:
   - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - gal (from `.symlinks/plugins/gal/darwin`)
-  - install_plugin (from `.symlinks/plugins/install_plugin/ios`)
   - open_file_ios (from `.symlinks/plugins/open_file_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -1468,8 +1465,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   gal:
     :path: ".symlinks/plugins/gal/darwin"
-  install_plugin:
-    :path: ".symlinks/plugins/install_plugin/ios"
   open_file_ios:
     :path: ".symlinks/plugins/open_file_ios/ios"
   package_info_plus:
@@ -1512,7 +1507,6 @@ SPEC CHECKSUMS:
   "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8
   gRPC-Core: 860978b7db482de8b4f5e10677216309b5ff6330
   GTMSessionFetcher: fc75fc972958dceedee61cb662ae1da7a83a91cf
-  install_plugin: b52f81470a1f37b006607bdf7ffc6031df43fe76
   leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   open_file_ios: 461db5853723763573e140de3193656f91990d9e

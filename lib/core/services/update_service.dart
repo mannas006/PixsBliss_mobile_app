@@ -34,7 +34,7 @@ class UpdateInfo {
 }
 
 class UpdateService {
-  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json?token=GHSAT0AAAAAADGDJGLZTUE4TKGC3ET2JHP22DK3ZOA';
+  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json?token=GHSAT0AAAAAADGDJGLZI3BVXT7Q3EHQTAVM2DK62BQ';
   final Dio _dio = Dio();
 
   /// Check for available updates
