@@ -17,17 +17,22 @@ class PremiumService {
   Future<void> init() async {
     if (_isInitialized) return;
 
-    // Initialize SharedPreferences
-    _prefs = await SharedPreferences.getInstance();
+    try {
+      // Initialize SharedPreferences
+      _prefs = await SharedPreferences.getInstance();
 
-    // Initialize Razorpay
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+      // Initialize Razorpay
+      _razorpay = Razorpay();
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
-    _isInitialized = true;
-    log('PremiumService initialized');
+      _isInitialized = true;
+      log('✅ PremiumService initialized successfully');
+    } catch (e) {
+      log('❌ Error initializing PremiumService: $e');
+      rethrow;
+    }
   }
 
   /// Check if a wallpaper is unlocked
@@ -38,9 +43,9 @@ class PremiumService {
 
   /// Unlock a wallpaper
   Future<bool> unlockWallpaper(String wallpaperId, String wallpaperTitle) async {
-    if (!_isInitialized) await init();
-
     try {
+      if (!_isInitialized) await init();
+
       // Create payment options
       var options = {
         'key': _razorpayKeyId,
@@ -57,15 +62,17 @@ class PremiumService {
         }
       };
 
+      log('Opening Razorpay payment gateway for wallpaper: $wallpaperId');
+      
       // Open payment gateway
       _razorpay.open(options);
       
       // Store wallpaper ID for payment success callback
-      _prefs.setString('pending_unlock', wallpaperId);
+      await _prefs.setString('pending_unlock', wallpaperId);
       
       return true;
     } catch (e) {
-      log('Error initiating payment: $e');
+      log('❌ Error initiating payment: $e');
       return false;
     }
   }
