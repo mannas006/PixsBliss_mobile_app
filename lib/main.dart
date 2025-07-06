@@ -7,6 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/firestore_service.dart';
 import 'core/services/cache_service.dart';
+import 'core/services/premium_service.dart';
 import 'core/providers/wallpaper_provider.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/splash/presentation/pages/splash_screen.dart';
@@ -18,6 +19,10 @@ void main() async {
   final firestoreService = FirestoreService();
   await firestoreService.init();
   await CacheService().init();
+  
+  // Initialize premium service
+  final premiumService = PremiumService();
+  await premiumService.init();
   
   // Ensure downloads and views fields exist for all wallpapers
   try {

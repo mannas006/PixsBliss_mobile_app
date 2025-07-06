@@ -6,11 +6,12 @@ class ButtonAnimation extends StatefulWidget {
   final VoidCallback onDownload;
   final bool isComplete;
   final double borderRadius;
+  final String buttonText;
 
   const ButtonAnimation(
     this.primaryColor,
     this.darkPrimaryColor,
-    {required this.onDownload, required this.isComplete, this.borderRadius = 12.0, Key? key}
+    {required this.onDownload, required this.isComplete, this.borderRadius = 12.0, this.buttonText = "Download", Key? key}
   ) : super(key: key);
 
   @override
@@ -133,7 +134,7 @@ class _ButtonAnimationState extends State<ButtonAnimation> with TickerProviderSt
                       child: Align(
                         child: 
                         !widget.isComplete ?
-                        Text("Download", style: TextStyle(color: Colors.white, fontSize: 16),)
+                        Text(widget.buttonText, style: TextStyle(color: Colors.white, fontSize: 16),)
                         :
                         Icon(Icons.check, color: Colors.white,)
                       ),

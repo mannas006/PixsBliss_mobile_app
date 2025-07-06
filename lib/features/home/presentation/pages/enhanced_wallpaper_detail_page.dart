@@ -10,6 +10,7 @@ import 'dart:io';
 import 'button_animation.dart';
 import '../../../../core/models/wallpaper.dart';
 import '../../../../core/services/firestore_service.dart';
+import '../../../../core/services/premium_service.dart';
 
 class WallpaperDetailPage extends ConsumerStatefulWidget {
   final Wallpaper wallpaper;
@@ -31,6 +32,8 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
   bool _showInfo = false;
   bool _fullImageLoaded = false;
   bool _downloadComplete = false;
+  bool _isUnlocked = false;
+  bool _isCheckingUnlockStatus = true;
 
   @override
   void initState() {
@@ -46,14 +49,43 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
     firestoreService.init().then((_) {
       firestoreService.incrementViewCount(widget.wallpaper.id);
     });
-    // Ensure info panel is hidden by default
-    // _showInfo = false; // Removed as info panel is gone
+
+    // Check unlock status
+    _checkUnlockStatus();
+  }
+
+  Future<void> _checkUnlockStatus() async {
+    final premiumService = PremiumService();
+    await premiumService.init();
+    final isUnlocked = await premiumService.isWallpaperUnlocked(widget.wallpaper.id);
+    
+    if (mounted) {
+      setState(() {
+        _isUnlocked = isUnlocked;
+        _isCheckingUnlockStatus = false;
+      });
+    }
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  bool get _isPremium => widget.wallpaper.featured == true;
+  bool get _canDownload => !_isPremium || _isUnlocked;
+
+  String get _buttonText {
+    if (_isCheckingUnlockStatus) return 'Loading...';
+    if (_isPremium && !_isUnlocked) return 'Unlock ₹1';
+    return 'Download';
+  }
+
+  VoidCallback? get _buttonAction {
+    if (_isCheckingUnlockStatus) return null;
+    if (_isPremium && !_isUnlocked) return _unlockWallpaper;
+    return _downloadWallpaper;
   }
 
   @override
@@ -198,9 +230,10 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
                     child: ButtonAnimation(
                       Colors.white.withOpacity(0.15), // Glass color
                       Colors.white.withOpacity(0.25), // Slightly more opaque for the bar
-                      onDownload: _downloadWallpaper,
+                      onDownload: _buttonAction ?? () {},
                       isComplete: _downloadComplete,
                       borderRadius: 24.0, // Pass this to ButtonAnimation for more rounding
+                      buttonText: _buttonText,
                     ),
                   ),
                 ],
@@ -484,5 +517,38 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
       return '${(count / 1000).toStringAsFixed(1)}K';
     }
     return count.toString();
+  }
+
+  Future<void> _unlockWallpaper() async {
+    try {
+      final premiumService = PremiumService();
+      await premiumService.init();
+      
+      final success = await premiumService.unlockWallpaper(
+        widget.wallpaper.id,
+        widget.wallpaper.title,
+      );
+      
+      if (success) {
+        _showSuccessMessage('Payment initiated! Please complete the payment to unlock this wallpaper.');
+        
+        // Listen for payment success
+        _listenForPaymentSuccess();
+      } else {
+        _showErrorMessage('Failed to initiate payment. Please try again.');
+      }
+    } catch (e) {
+      _showErrorMessage('Error: $e');
+    }
+  }
+
+  void _listenForPaymentSuccess() {
+    // Check unlock status periodically after payment initiation
+    Future.delayed(const Duration(seconds: 2), () async {
+      await _checkUnlockStatus();
+      if (_isUnlocked) {
+        _showSuccessMessage('Wallpaper unlocked successfully! You can now download it.');
+      }
+    });
   }
 }
