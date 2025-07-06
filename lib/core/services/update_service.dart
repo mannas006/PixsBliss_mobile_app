@@ -35,7 +35,22 @@ class UpdateInfo {
 
 class UpdateService {
   static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json?token=GHSAT0AAAAAADGDJGLZI3BVXT7Q3EHQTAVM2DK62BQ';
-  final Dio _dio = Dio();
+  late final Dio _dio;
+
+  UpdateService() {
+    _dio = Dio(BaseOptions(
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+        'Accept': 'application/octet-stream',
+        'Accept-Encoding': 'gzip, deflate, br',
+      },
+      followRedirects: true,
+      maxRedirects: 10,
+      validateStatus: (status) {
+        return status != null && status < 500;
+      },
+    ));
+  }
 
   /// Check for available updates
   Future<UpdateInfo?> checkForUpdate() async {
@@ -91,9 +106,36 @@ class UpdateService {
     return false;
   }
 
+  /// Get the actual download URL from GitHub API
+  Future<String?> _getActualDownloadUrl(String apkUrl) async {
+    try {
+      // For now, let's skip the GitHub API approach and use the direct URL
+      // The API approach is causing issues with 415 status codes
+      print('Using direct download URL: $apkUrl');
+      return apkUrl;
+    } catch (e) {
+      print('Error getting actual download URL: $e');
+      return apkUrl;
+    }
+  }
+
   /// Download APK file
   Future<String?> downloadApk(String apkUrl, Function(int, int) onProgress) async {
     try {
+      print('Starting download from: $apkUrl');
+      
+      // Try to get the actual download URL, fallback to original
+      String downloadUrl = apkUrl;
+      try {
+        final actualUrl = await _getActualDownloadUrl(apkUrl);
+        if (actualUrl != null) {
+          downloadUrl = actualUrl;
+        }
+      } catch (e) {
+        print('Failed to get actual download URL, using original: $e');
+      }
+      print('Using download URL: $downloadUrl');
+      
       // Get downloads directory
       Directory? downloadsDir;
       if (Platform.isAndroid) {
@@ -109,25 +151,65 @@ class UpdateService {
         throw Exception('Could not access downloads directory');
       }
 
+      print('Download directory: ${downloadsDir.path}');
+
       // Create filename with timestamp
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final fileName = 'PixsBliss_${timestamp}.apk';
       final filePath = '${downloadsDir.path}/$fileName';
 
+      print('Downloading to: $filePath');
+
       // Download file with progress
       await _dio.download(
-        apkUrl,
+        downloadUrl,
         filePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
+            print('Download progress: $received / $total bytes');
             onProgress(received, total);
           }
         },
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+            'Accept': 'application/octet-stream, application/vnd.android.package-archive',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': 'https://github.com/',
+          },
+          followRedirects: true,
+          maxRedirects: 10,
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        ),
       );
 
-      return filePath;
+      // Verify file was downloaded
+      final file = File(filePath);
+      if (await file.exists()) {
+        final fileSize = await file.length();
+        print('Download completed. File size: $fileSize bytes');
+        
+        // Check if file is too small (likely an HTML error page)
+        if (fileSize < 1000) {
+          final content = await file.readAsString();
+          if (content.contains('<!DOCTYPE html>') || content.contains('<html')) {
+            throw Exception('Downloaded file is HTML (error page), not APK. File size: $fileSize bytes');
+          }
+        }
+        
+        return filePath;
+      } else {
+        throw Exception('File was not created after download');
+      }
     } catch (e) {
       print('Error downloading APK: $e');
+      if (e is DioException) {
+        print('DioException details: ${e.response?.statusCode} - ${e.response?.statusMessage}');
+        print('Response data: ${e.response?.data}');
+      }
       return null;
     }
   }
