@@ -9,6 +9,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/wallpaper_provider.dart';
+import '../../../../core/providers/update_provider.dart';
+import '../../../../core/services/update_service.dart';
+import '../../../../shared/widgets/update_dialog.dart';
+import '../../../../shared/widgets/download_progress_dialog.dart';
 
 class SettingsTab extends ConsumerStatefulWidget {
   const SettingsTab({super.key});
@@ -500,9 +504,126 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
     }
   }
 
-  void _checkForUpdates() {
-    // TODO: Check for app updates
-    _showInfoMessage('You\'re using the latest version');
+  Future<void> _checkForUpdates() async {
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16),
+              Text('Checking for updates...'),
+            ],
+          ),
+        ),
+      );
+
+      // Check for updates
+      final updateInfo = await ref.read(updateServiceProvider).checkForUpdate();
+      
+      // Hide loading dialog
+      Navigator.of(context).pop();
+
+      if (updateInfo != null) {
+        // Show update dialog
+        showDialog(
+          context: context,
+          builder: (context) => UpdateDialog(
+            updateInfo: updateInfo,
+            onDownload: () => _downloadUpdate(updateInfo),
+          ),
+        );
+      } else {
+        _showInfoMessage('You\'re using the latest version');
+      }
+    } catch (e) {
+      // Hide loading dialog if still showing
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      _showInfoMessage('Failed to check for updates. Please try again.');
+    }
+  }
+
+  Future<void> _downloadUpdate(UpdateInfo updateInfo) async {
+    try {
+      // Request permissions first
+      final hasPermissions = await ref.read(updateServiceProvider).requestPermissions();
+      if (!hasPermissions) {
+        _showInfoMessage('Storage and install permissions are required to download updates.');
+        return;
+      }
+
+      // Set downloading state
+      ref.read(isDownloadingProvider.notifier).state = true;
+      ref.read(downloadStatusProvider.notifier).state = 'Preparing download...';
+
+      // Show download progress dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Consumer(
+          builder: (context, ref, child) {
+            final progress = ref.watch(updateDownloadProgressProvider);
+            final status = ref.watch(downloadStatusProvider);
+            
+            return DownloadProgressDialog(
+              progress: progress,
+              status: status,
+              onCancel: () {
+                ref.read(isDownloadingProvider.notifier).state = false;
+                Navigator.of(context).pop();
+              },
+            );
+          },
+        ),
+      );
+
+      // Download APK
+      final apkPath = await ref.read(updateServiceProvider).downloadApk(
+        updateInfo.apkUrl,
+        (received, total) {
+          final progress = ref.read(updateServiceProvider).getProgressPercentage(received, total);
+          final status = 'Downloading... ${ref.read(updateServiceProvider).formatFileSize(received)} / ${ref.read(updateServiceProvider).formatFileSize(total)}';
+          
+          ref.read(updateDownloadProgressProvider.notifier).state = progress;
+          ref.read(downloadStatusProvider.notifier).state = status;
+        },
+      );
+
+      // Hide download dialog
+      Navigator.of(context).pop();
+
+      if (apkPath != null) {
+        // Update status
+        ref.read(downloadStatusProvider.notifier).state = 'Download completed! Installing...';
+        
+        // Install APK
+        final success = await ref.read(updateServiceProvider).installApk(apkPath);
+        
+        if (success) {
+          _showInfoMessage('Update downloaded successfully! Please complete the installation.');
+        } else {
+          _showInfoMessage('Download completed! Please install the APK manually from your Downloads folder.');
+        }
+      } else {
+        _showInfoMessage('Failed to download update. Please try again.');
+      }
+    } catch (e) {
+      // Hide download dialog if still showing
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      _showInfoMessage('Failed to download update. Please try again.');
+    } finally {
+      // Reset states
+      ref.read(isDownloadingProvider.notifier).state = false;
+      ref.read(updateDownloadProgressProvider.notifier).state = 0.0;
+      ref.read(downloadStatusProvider.notifier).state = '';
+    }
   }
 
   void _showInfoMessage(String message) {
