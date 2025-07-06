@@ -20,13 +20,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Install iOS dependencies
+      - name: Clean and install iOS dependencies
         run: |
           cd ios
+          rm -rf Pods Podfile.lock
           pod install
 
       - name: Build release IPA (unsigned)
         run: |
+          flutter clean
           flutter build ios --release --no-codesign
           cd build/ios/iphoneos
           mkdir -p Payload

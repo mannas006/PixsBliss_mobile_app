@@ -39,5 +39,13 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    # Add Swift compiler flags for Firebase experimental features
+    target.build_configurations.each do |config|
+      config.build_settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS'] ||= ['$(inherited)']
+      config.build_settings['OTHER_SWIFT_FLAGS'] ||= ['$(inherited)']
+      config.build_settings['OTHER_SWIFT_FLAGS'] << '-enable-experimental-feature'
+      config.build_settings['OTHER_SWIFT_FLAGS'] << 'AccessLevelOnImport'
+    end
   end
 end
