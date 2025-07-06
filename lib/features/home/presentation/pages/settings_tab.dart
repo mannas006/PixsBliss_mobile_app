@@ -208,6 +208,16 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                     ),
                     onTap: () => _openTermsOfService(),
                   ),
+                  _buildSettingsTile(
+                    icon: MdiIcons.cancel,
+                    title: 'Cancellation/Refund',
+                    subtitle: 'Read our cancellation/refund policy',
+                    trailing: Icon(
+                      MdiIcons.openInNew,
+                      color: AppColors.grey400,
+                    ),
+                    onTap: () => _openCancellationPolicy(),
+                  ),
                 ]),
 
                 SizedBox(height: 24.h),
@@ -483,6 +493,34 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
             '5. Modifications: We may update these terms at any time. Continued use of the app means you accept any changes.\n'
             '6. Disclaimer: PixsBliss is provided as-is without warranties of any kind.\n\n'
             'For questions or concerns, please contact us via the support option in the app.'
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openCancellationPolicy() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancellation/Refund Policy'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'Cancellation/Refund Policy for PixsBliss\n\n'
+            '1. No Refunds: All purchases made through PixsBliss are final. No refunds will be provided after a wallpaper has been purchased and downloaded.\n\n'
+            '2. Digital Content: Since wallpapers are digital content that can be immediately downloaded and used, we cannot offer refunds once the purchase is completed.\n\n'
+            '3. Purchase Confirmation: Before completing any purchase, please ensure you have selected the correct wallpaper and are satisfied with the preview.\n\n'
+            '4. Technical Issues: If you experience technical difficulties downloading your purchased wallpaper, please contact our support team for assistance.\n\n'
+            '5. Cancellation: You may cancel a purchase before the download begins, but once the wallpaper has been downloaded to your device, the purchase cannot be cancelled.\n\n'
+            '6. Quality Assurance: We strive to provide high-quality wallpapers. If you believe there is a quality issue with your purchase, please contact support within 24 hours.\n\n'
+            '7. Subscription Services: If you have a subscription, you may cancel future billing at any time, but no refunds will be provided for the current billing period.\n\n'
+            'By making a purchase in PixsBliss, you acknowledge and agree to this cancellation and refund policy.'
           ),
         ),
         actions: [
