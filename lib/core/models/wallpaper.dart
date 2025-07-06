@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart'; // Temporarily disabled for iOS build
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/cloudinary_service.dart';
 
 class Wallpaper extends Equatable {
@@ -199,10 +199,14 @@ class Wallpaper extends Equatable {
       views: json['views'] as int? ?? 0,
       status: json['status'] as String? ?? 'active',
       createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'].toString())
+          ? (json['createdAt'] is Timestamp 
+              ? (json['createdAt'] as Timestamp).toDate()
+              : DateTime.parse(json['createdAt'] as String))
           : DateTime.now(),
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'].toString())
+          ? (json['updatedAt'] is Timestamp 
+              ? (json['updatedAt'] as Timestamp).toDate()
+              : DateTime.parse(json['updatedAt'] as String))
           : DateTime.now(),
       source: 'firestore', // Mark as Firestore source
     );

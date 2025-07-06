@@ -29,8 +29,8 @@ jobs:
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.GH_PAT }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: PixsBliss.apk
           asset_name: PixsBliss.apk
-          tag: v1.0.0
+          tag: v1.0
           overwrite: true 
