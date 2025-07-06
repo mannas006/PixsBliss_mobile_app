@@ -15,8 +15,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Initialize Firebase and cache services
-  await FirestoreService().init();
+  final firestoreService = FirestoreService();
+  await firestoreService.init();
   await CacheService().init();
+  
+  // Ensure downloads and views fields exist for all wallpapers
+  try {
+    await firestoreService.initializeDownloadsField();
+    await firestoreService.initializeViewsField();
+  } catch (e) {
+    print('Error initializing downloads/views field: $e');
+  }
   
   // Set system UI overlay style will be handled in the app based on theme
 

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:dio/dio.dart';
-import 'package:media_store_plus/media_store_plus.dart';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:gal/gal.dart';
-import 'dart:io' show Platform;
+import 'dart:io';
 import 'button_animation.dart';
-
 import '../../../../core/models/wallpaper.dart';
+import '../../../../core/services/firestore_service.dart';
 
 class WallpaperDetailPage extends ConsumerStatefulWidget {
   final Wallpaper wallpaper;
@@ -44,6 +41,11 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
     );
     _animationController.forward();
     
+    // Track view in Firestore
+    final firestoreService = FirestoreService();
+    firestoreService.init().then((_) {
+      firestoreService.incrementViewCount(widget.wallpaper.id);
+    });
     // Ensure info panel is hidden by default
     // _showInfo = false; // Removed as info panel is gone
   }
@@ -354,6 +356,18 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
       // Save to gallery using gal (works for both Android and iOS)
       try {
         await Gal.putImage(filePath);
+        
+        // Track download in Firestore after successful download
+        try {
+          final firestoreService = FirestoreService();
+          await firestoreService.init();
+          await firestoreService.incrementDownloadCount(widget.wallpaper.id);
+          print('Download tracked successfully for wallpaper: ${widget.wallpaper.id}');
+        } catch (e) {
+          print('Failed to track download in Firestore: $e');
+          // Don't show error to user as download was successful
+        }
+        
         // Success: do not show notification
       } on GalException catch (e) {
         _showErrorMessage(e.type.message);

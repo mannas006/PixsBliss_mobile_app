@@ -160,4 +160,122 @@ class FirestoreService {
       return [];
     }
   }
+
+  /// Increment download count for a wallpaper
+  Future<void> incrementDownloadCount(String wallpaperId) async {
+    try {
+      final wallpaperRef = _firestore.collection('wallpapers').doc(wallpaperId);
+      
+      // Use FieldValue.increment to atomically increment the downloads count
+      await wallpaperRef.update({
+        'downloads': FieldValue.increment(1),
+        'lastDownloadedAt': FieldValue.serverTimestamp(),
+      });
+      
+      print('Successfully incremented download count for wallpaper: $wallpaperId');
+    } catch (e) {
+      print('Error incrementing download count: $e');
+      log('Error incrementing download count for wallpaper $wallpaperId: $e');
+      throw e;
+    }
+  }
+
+  /// Get total downloads across all wallpapers
+  Future<int> getTotalDownloads() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('wallpapers')
+          .get();
+
+      int totalDownloads = 0;
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        totalDownloads += (data['downloads'] as int?) ?? 0;
+      }
+      
+      return totalDownloads;
+    } catch (e) {
+      print('Error getting total downloads: $e');
+      log('Error getting total downloads: $e');
+      return 0;
+    }
+  }
+
+  /// Initialize downloads field for wallpapers that don't have it
+  Future<void> initializeDownloadsField() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('wallpapers')
+          .get();
+
+      final batch = _firestore.batch();
+      int updateCount = 0;
+
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        if (data['downloads'] == null) {
+          batch.update(doc.reference, {
+            'downloads': 0,
+            'lastDownloadedAt': null,
+          });
+          updateCount++;
+        }
+      }
+
+      if (updateCount > 0) {
+        await batch.commit();
+        print('Initialized downloads field for $updateCount wallpapers');
+      }
+    } catch (e) {
+      print('Error initializing downloads field: $e');
+      log('Error initializing downloads field: $e');
+    }
+  }
+
+  /// Increment view count for a wallpaper
+  Future<void> incrementViewCount(String wallpaperId) async {
+    try {
+      final wallpaperRef = _firestore.collection('wallpapers').doc(wallpaperId);
+      await wallpaperRef.update({
+        'views': FieldValue.increment(1),
+        'lastViewedAt': FieldValue.serverTimestamp(),
+      });
+      print('Successfully incremented view count for wallpaper: $wallpaperId');
+    } catch (e) {
+      print('Error incrementing view count: $e');
+      log('Error incrementing view count for wallpaper $wallpaperId: $e');
+      throw e;
+    }
+  }
+
+  /// Initialize views field for wallpapers that don't have it
+  Future<void> initializeViewsField() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('wallpapers')
+          .get();
+
+      final batch = _firestore.batch();
+      int updateCount = 0;
+
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        if (data['views'] == null) {
+          batch.update(doc.reference, {
+            'views': 0,
+            'lastViewedAt': null,
+          });
+          updateCount++;
+        }
+      }
+
+      if (updateCount > 0) {
+        await batch.commit();
+        print('Initialized views field for $updateCount wallpapers');
+      }
+    } catch (e) {
+      print('Error initializing views field: $e');
+      log('Error initializing views field: $e');
+    }
+  }
 } 
