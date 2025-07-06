@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
-import 'core/services/firestore_service.dart';
+// import 'core/services/firestore_service.dart'; // Temporarily disabled for iOS build
 import 'core/services/cache_service.dart';
 import 'core/providers/wallpaper_provider.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Initialize Firebase and cache services
-  await FirestoreService().init();
+  // await FirestoreService().init(); // Temporarily disabled for iOS build
   await CacheService().init();
   
   // Set system UI overlay style will be handled in the app based on theme
