@@ -268,20 +268,13 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                 Center(
                   child: Column(
                     children: [
-                      Container(
+                      Image.asset(
+                        'icon.png',
                         width: 64.w,
                         height: 64.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Icon(
-                          MdiIcons.wallpaper,
-                          color: Colors.white,
-                          size: 32.sp,
-                        ),
+                        fit: BoxFit.contain,
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 5.h),
                       Text(
                         'PixsBliss',
                         style: TextStyle(
