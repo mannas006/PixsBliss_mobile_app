@@ -54,6 +54,8 @@ post_install do |installer|
       # Disable some warnings that might cause issues
       config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
       config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
+      
+
     end
   end
 end
