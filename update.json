@@ -1,5 +1,5 @@
 {
   "version": "1.0.1",
-  "apk_url": "https://github.com/mannas006/PixsBliss_mobile_app/releases/download/v1.0.1/PixsBliss.apk",
+  "apk_url": "https://github.com/mannas006/PixsBliss_mobile_app/releases/tag/v1.0.1#:~:text=3-,PixsBliss.apk,-sha256%3A2e5fd60f6357b3332dd219fbc577e0faf9108565107e58340cc9773f0abe0d53",
   "changelog": "🆕 Added in-app update system\n🎯 New dedicated update page with current version display\n📱 Improved settings UI and navigation\n🔧 Enhanced error handling and user feedback\n⚡ Better performance and stability\n🐛 Fixed various minor bugs and issues"
 }
