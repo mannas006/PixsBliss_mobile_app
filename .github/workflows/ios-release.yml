@@ -1,50 +1,42 @@
-name: "🍎 Build & Upload IPA"
+name: iOS-ipa-build
 
 on:
   workflow_dispatch:
 
 jobs:
-  ios-build:
-    name: "🎉 iOS Build"
-    runs-on: macos-14
-    env:
-      FLUTTER_VERSION: "3.32.5"
-
+  build-ios:
+    name: 🎉 iOS Build
+    runs-on: macos-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
+          channel: 'stable'
+          architecture: x64
+      - run: flutter pub get
+      
 
-      - name: Install dependencies
-        run: |
-          flutter pub cache clean
-          flutter pub get
+      - run: pod repo update
+        working-directory: ios
 
-      - name: Clean and install iOS dependencies
-        run: |
-          cd ios
-          rm -rf Pods Podfile.lock
-          pod install
+      - run: flutter build ios --release --no-codesign
 
-      - name: Build release IPA (unsigned)
-        run: |
-          flutter clean
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r ../../../PixsBliss.ipa Payload
+      - run: mkdir Payload
+        working-directory: build/ios/iphoneos
 
-      - name: Upload Release Asset
+      - run: mv Runner.app/ Payload
+        working-directory: build/ios/iphoneos
+
+      - name: Zip output
+        run: zip -qq -r -9 FlutterIpaExport.ipa Payload
+        working-directory: build/ios/iphoneos
+
+      - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GH_PAT }}
-          file: PixsBliss.ipa
-          asset_name: PixsBliss.ipa
+          file: build/ios/iphoneos/FlutterIpaExport.ipa
           tag: v1.0
-          overwrite: true 
+          overwrite: true
+          body: "This is first release" 
