@@ -1,0 +1,43 @@
+name: "🍎 Build & Upload IPA"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-build:
+    name: "🎉 iOS Build"
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install iOS dependencies
+        run: |
+          cd ios
+          pod install
+
+      - name: Build release IPA (unsigned)
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r ../../../PixsBliss.ipa Payload
+
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GH_PAT }}
+          file: PixsBliss.ipa
+          asset_name: PixsBliss.ipa
+          tag: v1.0
+          overwrite: true 
