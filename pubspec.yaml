@@ -55,10 +55,10 @@ dependencies:
   curved_navigation_bar: ^1.0.6
   glassmorphism: ^3.0.0
 
-  # Firebase
-  firebase_core: ^3.2.0
-  cloud_firestore: ^5.1.0
-  firebase_auth: ^5.0.0
+  # Firebase - Temporarily disabled for iOS build
+  # firebase_core: ^3.2.0
+  # cloud_firestore: ^5.1.0
+  # firebase_auth: ^5.0.0
   
   # Cloudinary
   cloudinary_public: ^0.21.0
