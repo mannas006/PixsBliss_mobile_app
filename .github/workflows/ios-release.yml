@@ -35,7 +35,7 @@ jobs:
         run: |
           sudo gem install cocoapods
           cd ios
-          pod install
+          pod update
 
       - name: Clean build cache
         run: flutter clean
