@@ -1,0 +1,6 @@
+module FirebaseSharedSwift {
+  umbrella header "FirebaseSharedSwift-library-umbrella.h"
+
+  export *
+  module * { export * }
+}

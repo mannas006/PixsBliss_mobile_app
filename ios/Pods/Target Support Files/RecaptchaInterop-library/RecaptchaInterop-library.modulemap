@@ -1,0 +1,6 @@
+module RecaptchaInterop {
+  umbrella header "RecaptchaInterop-library-umbrella.h"
+
+  export *
+  module * { export * }
+}

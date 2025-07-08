@@ -1,6 +1,18 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '14.0'
 
+use_modular_headers!
+
+# Pin Firebase pods to 10.22.0 to match plugin requirements
+pod 'FirebaseCoreInternal', '10.22.0'
+pod 'FirebaseCore', '10.22.0'
+pod 'FirebaseAuth', '10.22.0'
+pod 'FirebaseFirestore', '10.22.0'
+pod 'FirebaseCrashlytics', '10.22.0'
+pod 'FirebaseMessaging', '10.22.0'
+pod 'FirebaseRemoteConfig', '10.22.0'
+pod 'FirebaseSharedSwift', '10.22.0'
+
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 

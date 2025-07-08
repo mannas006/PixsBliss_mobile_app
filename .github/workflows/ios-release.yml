@@ -40,7 +40,8 @@ jobs:
         run: |
           sudo gem install cocoapods
           cd ios
-          pod update
+          # Use pod install (not pod update) to respect Podfile version pins and match local dev setup
+          pod install
 
       - name: Clean build cache
         run: flutter clean

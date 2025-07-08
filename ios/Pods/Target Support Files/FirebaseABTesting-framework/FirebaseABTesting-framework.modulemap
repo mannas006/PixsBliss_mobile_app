@@ -1,0 +1,6 @@
+framework module FirebaseABTesting {
+  umbrella header "FirebaseABTesting-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

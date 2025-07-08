@@ -1,0 +1,15 @@
+CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
+CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/firebase_messaging
+DEFINES_MODULE = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/BoringSSL-GRPC-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseABTesting-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseAppCheckInterop-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseAuth-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreExtension-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreInternal-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCrashlytics-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseFirestore-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseFirestoreInternal-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseMessaging-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseRemoteConfig-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseSessions-framework" "${PODS_CONFIGURATION_BUILD_DIR}/FirebaseSharedSwift-framework" "${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher-framework" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransport-framework" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities-framework" "${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC-framework" "${PODS_CONFIGURATION_BUILD_DIR}/PromisesSwift-framework" "${PODS_CONFIGURATION_BUILD_DIR}/RecaptchaInterop-framework" "${PODS_CONFIGURATION_BUILD_DIR}/abseil-framework" "${PODS_CONFIGURATION_BUILD_DIR}/firebase_core" "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++-framework" "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-Core-framework" "${PODS_CONFIGURATION_BUILD_DIR}/leveldb-library-framework" "${PODS_CONFIGURATION_BUILD_DIR}/nanopb-framework"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 LIBRARY_VERSION=\@\"14.7.4\" LIBRARY_NAME=\@\"flutter-fire-fcm\"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/BoringSSL-GRPC" "${PODS_ROOT}/Headers/Public/PromisesObjC" "${PODS_ROOT}/Headers/Public/abseil" "${PODS_ROOT}/Headers/Public/gRPC-C++" "${PODS_ROOT}/Headers/Public/gRPC-Core" "${PODS_ROOT}/Headers/Public/leveldb-library"
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_DEVELOPMENT_LANGUAGE = ${DEVELOPMENT_LANGUAGE}
+PODS_ROOT = ${SRCROOT}
+PODS_TARGET_SRCROOT = ${PODS_ROOT}/../.symlinks/plugins/firebase_messaging/ios
+PODS_XCFRAMEWORKS_BUILD_DIR = $(PODS_CONFIGURATION_BUILD_DIR)/XCFrameworkIntermediates
+PRODUCT_BUNDLE_IDENTIFIER = org.cocoapods.${PRODUCT_NAME:rfc1034identifier}
+SKIP_INSTALL = YES
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES
