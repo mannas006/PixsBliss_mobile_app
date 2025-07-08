@@ -31,6 +31,11 @@ jobs:
       - name: Clean CocoaPods cache
         run: pod cache clean --all
 
+      - name: Remove Podfile.lock and Pods
+        run: |
+          cd ios
+          rm -rf Pods Podfile.lock
+
       - name: Install CocoaPods
         run: |
           sudo gem install cocoapods
