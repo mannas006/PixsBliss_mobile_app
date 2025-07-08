@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallmuse/core/services/premium_service.dart';
+import 'package:pixsbliss/core/services/premium_service.dart';
 
 void main() {
   group('PremiumService Tests', () {

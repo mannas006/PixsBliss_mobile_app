@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wallmuse/core/services/update_service.dart';
+import 'package:pixsbliss/core/services/update_service.dart';
 
 void main() {
   group('UpdateService Tests', () {

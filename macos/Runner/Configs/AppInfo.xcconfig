@@ -8,7 +8,7 @@
 PRODUCT_NAME = PixsBliss
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.wallmuse.app.mobileApp
+PRODUCT_BUNDLE_IDENTIFIER = com.pixsbliss.app.mobileApp
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2025 com.wallmuse.app. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2025 com.pixsbliss.app. All rights reserved.

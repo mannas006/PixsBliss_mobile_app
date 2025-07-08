@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:488554890675:android:c425eff0f49f28f77bb7c6",
+        "mobilesdk_app_id": "1:488554890675:android:cc1413b20b8f79377bb7c6",
         "android_client_info": {
-          "package_name": "com.wallmuse.app.mobile_app"
+          "package_name": "com.pixsbliss.app.mobileApp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "488554890675-28o925m942btdf3hhkm9m1kom6ij2s4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCCAhaqgAzCQY_UJ-UfpqjGvTiuHfErkw4"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488554890675-28o925m942btdf3hhkm9m1kom6ij2s4g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "488554890675-7dorrvb7akrfbe5chsp1fek70cb6hsj0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pixsbliss.app.mobileApp"
+              }
+            }
+          ]
         }
       }
     }

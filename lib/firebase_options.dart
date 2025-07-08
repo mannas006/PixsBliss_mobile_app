@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
     projectId: 'wallpaper-97727',
     storageBucket: 'wallpaper-97727.firebasestorage.app',
     iosClientId: '488554890675-29daafd3ee0045de7bb7c6.apps.googleusercontent.com',
-    iosBundleId: 'com.wallmuse.app',
+    iosBundleId: 'com.pixsbliss.app.mobileApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -78,6 +78,6 @@ class DefaultFirebaseOptions {
     projectId: 'wallpaper-97727',
     storageBucket: 'wallpaper-97727.firebasestorage.app',
     iosClientId: '488554890675-29daafd3ee0045de7bb7c6.apps.googleusercontent.com',
-    iosBundleId: 'com.wallmuse.app',
+    iosBundleId: 'com.pixsbliss.app.mobileApp',
   );
 } 

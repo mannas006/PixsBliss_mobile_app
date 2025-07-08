@@ -34,7 +34,7 @@ class UpdateInfo {
 }
 
 class UpdateService {
-  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json?token=GHSAT0AAAAAADGDJGLZI3BVXT7Q3EHQTAVM2DK62BQ';
+  static const String _updateUrl = 'https://raw.githubusercontent.com/mannas006/PixsBliss_mobile_app/refs/heads/main/update.json';
   late final Dio _dio;
 
   UpdateService() {
@@ -120,7 +120,7 @@ class UpdateService {
   }
 
   /// Download APK file
-  Future<String?> downloadApk(String apkUrl, Function(int, int) onProgress) async {
+  Future<String?> downloadApk(String apkUrl, Function(int, int) onProgress, {CancelToken? cancelToken}) async {
     try {
       print('Starting download from: $apkUrl');
       
@@ -170,6 +170,7 @@ class UpdateService {
             onProgress(received, total);
           }
         },
+        cancelToken: cancelToken,
         options: Options(
           responseType: ResponseType.bytes,
           headers: {

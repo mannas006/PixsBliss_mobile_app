@@ -1,4 +1,4 @@
-package com.wallmuse.app.mobile_app
+package com.pixsbliss.app.mobileApp
 
 import io.flutter.embedding.android.FlutterActivity
 

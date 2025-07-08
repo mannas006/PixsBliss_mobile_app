@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/update_provider.dart';
@@ -22,6 +23,7 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
   bool _isChecking = false;
   UpdateInfo? _updateInfo;
   String? _errorMessage;
+  CancelToken? _cancelToken;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
   }
 
   Future<void> _downloadUpdate(UpdateInfo updateInfo) async {
+    _cancelToken = CancelToken();
     try {
       // Request permissions first
       final updateService = ref.read(updateServiceProvider);
@@ -92,8 +95,10 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
               progress: progress,
               status: status,
               onCancel: () {
+                _cancelToken?.cancel();
                 ref.read(isDownloadingProvider.notifier).state = false;
                 Navigator.of(context).pop();
+                _showInfoMessage('Download canceled');
               },
             );
           },
@@ -110,10 +115,13 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
           ref.read(updateDownloadProgressProvider.notifier).state = progress;
           ref.read(downloadStatusProvider.notifier).state = status;
         },
+        cancelToken: _cancelToken,
       );
 
       // Hide download dialog
-      Navigator.of(context).pop();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
 
       if (apkPath != null) {
         // Update status
@@ -127,7 +135,7 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
         } else {
           _showInfoMessage('Download completed! Please install the APK manually from your Downloads folder.');
         }
-      } else {
+      } else if (!(_cancelToken?.isCancelled ?? false)) {
         _showInfoMessage('Failed to download update. Please try again.');
       }
     } catch (e) {
@@ -135,12 +143,17 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       }
-      _showInfoMessage('Failed to download update. Please try again.');
+      if (e is DioException && (e.type == DioExceptionType.cancel || (_cancelToken?.isCancelled ?? false))) {
+        _showInfoMessage('Download canceled');
+      } else {
+        _showInfoMessage('Failed to download update. Please try again.');
+      }
     } finally {
       // Reset states
       ref.read(isDownloadingProvider.notifier).state = false;
       ref.read(updateDownloadProgressProvider.notifier).state = 0.0;
       ref.read(downloadStatusProvider.notifier).state = '';
+      _cancelToken = null;
     }
   }
 

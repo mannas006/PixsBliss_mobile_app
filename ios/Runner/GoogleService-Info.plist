@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>488554890675-7dorrvb7akrfbe5chsp1fek70cb6hsj0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.488554890675-7dorrvb7akrfbe5chsp1fek70cb6hsj0</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCxr_-qnxdHgQytbd8NlyeAugp7jCaW_qs</string>
 	<key>GCM_SENDER_ID</key>
@@ -9,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.wallmuse.app.mobileApp</string>
+	<string>com.pixsbliss.app.mobileApp</string>
 	<key>PROJECT_ID</key>
 	<string>wallpaper-97727</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:488554890675:ios:2288a05c5c675d0d7bb7c6</string>
+	<string>1:488554890675:ios:3ea442582428c6cf7bb7c6</string>
 </dict>
 </plist>

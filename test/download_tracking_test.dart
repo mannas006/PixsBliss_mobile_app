@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wallmuse/core/services/firestore_service.dart';
+import 'package:pixsbliss/core/services/firestore_service.dart';
 
 void main() {
   group('Download Tracking Tests', () {

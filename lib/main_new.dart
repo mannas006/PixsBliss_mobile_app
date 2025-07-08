@@ -29,13 +29,13 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: WallMuseApp(),
+      child: PixsBlissApp(),
     ),
   );
 }
 
-class WallMuseApp extends ConsumerWidget {
-  const WallMuseApp({super.key});
+class PixsBlissApp extends ConsumerWidget {
+  const PixsBlissApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

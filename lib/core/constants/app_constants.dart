@@ -16,7 +16,7 @@ class AppConstants {
   static const int maxPageSize = 50;
   
   // Download Settings
-  static const String downloadFolder = 'WallMuse';
+  static const String downloadFolder = 'PixsBliss';
   
   // Animation Durations
   static const Duration shortAnimation = Duration(milliseconds: 200);

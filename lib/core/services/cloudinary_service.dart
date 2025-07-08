@@ -12,7 +12,7 @@ class CloudinaryService {
   Future<void> init() async {
     _cloudinary = CloudinaryPublic(
       cloudName, // Cloudinary cloud name
-      'wallmuse-unsigned', // Cloudinary upload preset
+      'pixsbliss-unsigned', // Cloudinary upload preset
       cache: false,
     );
   }
