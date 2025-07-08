@@ -1,0 +1,40 @@
+name: "🍏 Build & Upload IPA"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-build:
+    name: "🍏 iOS Build"
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.32.5'
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios
+          pod install
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Clean build cache
+        run: flutter clean
+
+      - name: Build IPA
+        run: flutter build ipa --release --no-codesign
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixsBliss-IPA
+          path: build/ios/ipa/*.ipa 
