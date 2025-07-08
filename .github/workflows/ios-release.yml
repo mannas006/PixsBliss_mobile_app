@@ -22,8 +22,14 @@ jobs:
           channel: stable
           flutter-version: '3.32.5'
 
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Clean CocoaPods cache
+        run: pod cache clean --all
 
       - name: Install CocoaPods
         run: |
