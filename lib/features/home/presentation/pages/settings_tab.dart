@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:hive/hive.dart';
 import 'dart:math' as math;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/providers/wallpaper_provider.dart';
@@ -29,6 +30,20 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
 
   String? _cacheSize;
   bool _isCalculatingCache = false;
+  String? _appVersion;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = '${info.version} (Build ${info.buildNumber})';
+    });
+  }
 
   Future<void> _calculateCacheSize() async {
     setState(() {
@@ -217,7 +232,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                   _buildSettingsTile(
                     icon: MdiIcons.information,
                     title: 'App Version',
-                    subtitle: '1.0.0 (Build 1)',
+                    subtitle: _appVersion ?? 'Loading...',
                     trailing: null,
                   ),
                   _buildSettingsTile(
