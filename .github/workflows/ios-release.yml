@@ -2,6 +2,10 @@ name: "🍏 Build & Upload IPA"
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.1)'
+        required: true
 
 jobs:
   ios-build:
@@ -18,14 +22,14 @@ jobs:
           channel: stable
           flutter-version: '3.32.5'
 
+      - name: Install dependencies
+        run: flutter pub get
+
       - name: Install CocoaPods
         run: |
           sudo gem install cocoapods
           cd ios
           pod install
-
-      - name: Install dependencies
-        run: flutter pub get
 
       - name: Clean build cache
         run: flutter clean
@@ -33,8 +37,11 @@ jobs:
       - name: Build IPA
         run: flutter build ipa --release --no-codesign
 
-      - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload IPA to Release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: PixsBliss-IPA
-          path: build/ios/ipa/*.ipa 
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/ios/ipa/*.ipa
+          asset_name: PixsBliss.ipa
+          tag: ${{ github.event.inputs.tag }}
+          overwrite: true 
