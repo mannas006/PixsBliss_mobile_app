@@ -1,6 +1,0 @@
-module FirebaseABTesting {
-  umbrella header "FirebaseABTesting-library-umbrella.h"
-
-  export *
-  module * { export * }
-}

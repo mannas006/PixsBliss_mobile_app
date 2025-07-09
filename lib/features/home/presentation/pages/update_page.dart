@@ -120,7 +120,7 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
 
       // Hide download dialog
       if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
+      Navigator.of(context).pop();
       }
 
       if (apkPath != null) {
@@ -146,7 +146,7 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
       if (e is DioException && (e.type == DioExceptionType.cancel || (_cancelToken?.isCancelled ?? false))) {
         _showInfoMessage('Download canceled');
       } else {
-        _showInfoMessage('Failed to download update. Please try again.');
+      _showInfoMessage('Failed to download update. Please try again.');
       }
     } finally {
       // Reset states

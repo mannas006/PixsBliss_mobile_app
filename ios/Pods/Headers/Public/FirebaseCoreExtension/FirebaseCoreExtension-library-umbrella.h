@@ -1,1 +1,0 @@
-../../../Target Support Files/FirebaseCoreExtension-library/FirebaseCoreExtension-library-umbrella.h

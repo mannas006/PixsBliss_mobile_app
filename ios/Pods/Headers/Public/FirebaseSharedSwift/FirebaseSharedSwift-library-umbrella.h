@@ -1,1 +1,0 @@
-../../../Target Support Files/FirebaseSharedSwift-library/FirebaseSharedSwift-library-umbrella.h

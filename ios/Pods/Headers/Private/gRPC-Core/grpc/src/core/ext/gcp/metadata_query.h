@@ -1,1 +1,0 @@
-../../../../../../../../gRPC-Core/src/core/ext/gcp/metadata_query.h

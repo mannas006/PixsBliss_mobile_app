@@ -1,6 +1,0 @@
-module FirebaseMessaging {
-  umbrella header "FirebaseMessaging-library-umbrella.h"
-
-  export *
-  module * { export * }
-}

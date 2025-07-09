@@ -1,1 +1,0 @@
-../../../Target Support Files/FirebaseRemoteConfig-library/FirebaseRemoteConfig-library-umbrella.h

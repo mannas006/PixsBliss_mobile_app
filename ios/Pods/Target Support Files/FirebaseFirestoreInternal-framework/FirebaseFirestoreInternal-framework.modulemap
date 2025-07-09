@@ -1,6 +1,0 @@
-framework module FirebaseFirestoreInternal {
-  umbrella header "FirebaseFirestoreInternal-framework-umbrella.h"
-
-  export *
-  module * { export * }
-}

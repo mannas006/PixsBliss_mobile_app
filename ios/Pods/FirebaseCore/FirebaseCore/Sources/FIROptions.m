@@ -14,8 +14,8 @@
 
 #import "FirebaseCore/Extension/FIRAppInternal.h"
 #import "FirebaseCore/Extension/FIRLogger.h"
-#import "FirebaseCore/Extension/FIROptionsInternal.h"
 #import "FirebaseCore/Sources/FIRBundleUtil.h"
+#import "FirebaseCore/Sources/FIROptionsInternal.h"
 #import "FirebaseCore/Sources/Public/FirebaseCore/FIRVersion.h"
 
 // Keys for the strings in the plist file.
@@ -160,7 +160,7 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
   FIROptions *newOptions = [(FIROptions *)[[self class] allocWithZone:zone]
       initInternalWithOptionsDictionary:self.optionsDictionary];
   if (newOptions) {
-    newOptions.deepLinkURLScheme = self.deepLinkURLScheme;
+    newOptions->_deepLinkURLScheme = self->_deepLinkURLScheme;
     newOptions.appGroupID = self.appGroupID;
     newOptions.editingLocked = self.isEditingLocked;
     newOptions.usingOptionsFromDefaultPlist = self.usingOptionsFromDefaultPlist;
@@ -284,7 +284,7 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
     // The unit tests are set up to catch anything that does not properly convert.
     NSString *version = FIRFirebaseVersion();
     NSArray *components = [version componentsSeparatedByString:@"."];
-    NSString *major = [components objectAtIndex:0];
+    NSString *major = [NSString stringWithFormat:@"%02d", [[components objectAtIndex:0] intValue]];
     NSString *minor = [NSString stringWithFormat:@"%02d", [[components objectAtIndex:1] intValue]];
     NSString *patch = [NSString stringWithFormat:@"%02d", [[components objectAtIndex:2] intValue]];
     kFIRLibraryVersionID = [NSString stringWithFormat:@"%@%@%@000", major, minor, patch];
@@ -357,8 +357,8 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
 
   // Validate extra properties not contained in the dictionary. Only validate it if one of the
   // objects has the property set.
-  if ((options.deepLinkURLScheme != nil || self.deepLinkURLScheme != nil) &&
-      ![options.deepLinkURLScheme isEqualToString:self.deepLinkURLScheme]) {
+  if ((options->_deepLinkURLScheme != nil || self->_deepLinkURLScheme != nil) &&
+      ![options->_deepLinkURLScheme isEqualToString:self->_deepLinkURLScheme]) {
     return NO;
   }
 
@@ -384,7 +384,7 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
   // Note: `self.analyticsOptionsDictionary` was left out here since it solely relies on the
   // contents of the main bundle's `Info.plist`. We should avoid reading that file and the contents
   // should be identical.
-  return self.optionsDictionary.hash ^ self.deepLinkURLScheme.hash ^ self.appGroupID.hash;
+  return self.optionsDictionary.hash ^ self->_deepLinkURLScheme.hash ^ self.appGroupID.hash;
 }
 
 #pragma mark - Internal instance methods
@@ -441,8 +441,8 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
 }
 
 - (BOOL)isAnalyticsCollectionExplicitlySet {
-  // If it's de-activated, it classifies as explicity set. If not, it's not a good enough indication
-  // that the developer wants FirebaseAnalytics enabled so continue checking.
+  // If it's de-activated, it classifies as explicitly set. If not, it's not a good enough
+  // indication that the developer wants FirebaseAnalytics enabled so continue checking.
   if (self.isAnalyticsCollectionDeactivated) {
     return YES;
   }
