@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/services/firestore_service.dart';
+import 'dart:io';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -56,6 +62,51 @@ class _SplashScreenState extends State<SplashScreen>
         Navigator.of(context).pushReplacementNamed('/home');
       }
     });
+    _handleInstallTracking();
+    _sendActiveUserHeartbeat();
+  }
+
+  Future<void> _handleInstallTracking() async {
+    final prefs = await SharedPreferences.getInstance();
+    const installKey = 'install_tracked_id';
+    String? installId = prefs.getString(installKey);
+    if (installId == null) {
+      // First launch, generate UUID and track install
+      installId = const Uuid().v4();
+      await prefs.setString(installKey, installId);
+      final platform = Platform.isAndroid ? 'android' : Platform.operatingSystem;
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appVersion = packageInfo.version;
+      final firestoreService = FirestoreService();
+      await firestoreService.init();
+      await firestoreService.trackInstall(
+        id: installId,
+        platform: platform,
+        appVersion: appVersion,
+        timestamp: Timestamp.now(),
+      );
+    }
+  }
+
+  Future<void> _sendActiveUserHeartbeat() async {
+    final prefs = await SharedPreferences.getInstance();
+    const installKey = 'install_tracked_id';
+    String? deviceId = prefs.getString(installKey);
+    if (deviceId == null) {
+      // If not present, generate and store (should not happen if install tracking is working)
+      deviceId = const Uuid().v4();
+      await prefs.setString(installKey, deviceId);
+    }
+    final platform = Platform.isAndroid ? 'android' : Platform.operatingSystem;
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = packageInfo.version;
+    final firestoreService = FirestoreService();
+    await firestoreService.init();
+    await firestoreService.sendActiveUserHeartbeat(
+      deviceId: deviceId,
+      platform: platform,
+      appVersion: appVersion,
+    );
   }
 
   @override

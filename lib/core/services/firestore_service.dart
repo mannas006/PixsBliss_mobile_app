@@ -278,4 +278,45 @@ class FirestoreService {
       log('Error initializing views field: $e');
     }
   }
+
+  /// Track app install in Firestore
+  Future<void> trackInstall({
+    required String id,
+    required String platform,
+    required String appVersion,
+    required Timestamp timestamp,
+  }) async {
+    try {
+      await _firestore.collection('installs').doc(id).set({
+        'id': id,
+        'platform': platform,
+        'app_version': appVersion,
+        'timestamp': timestamp,
+      });
+      print('Install tracked: id=$id, platform=$platform, app_version=$appVersion');
+    } catch (e) {
+      print('Error tracking install: $e');
+      log('Error tracking install: $e');
+    }
+  }
+
+  /// Send heartbeat for active user tracking
+  Future<void> sendActiveUserHeartbeat({
+    required String deviceId,
+    required String platform,
+    required String appVersion,
+  }) async {
+    try {
+      await _firestore.collection('active_users').doc(deviceId).set({
+        'deviceId': deviceId,
+        'platform': platform,
+        'app_version': appVersion,
+        'last_seen': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      print('Active user heartbeat sent: deviceId=$deviceId');
+    } catch (e) {
+      print('Error sending active user heartbeat: $e');
+      log('Error sending active user heartbeat: $e');
+    }
+  }
 } 

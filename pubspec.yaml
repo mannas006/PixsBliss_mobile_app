@@ -87,6 +87,7 @@ dependencies:
   # gallery_saver: ...
   # image_gallery_saver: ...
   gal: ^2.3.1
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
