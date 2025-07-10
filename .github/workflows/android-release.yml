@@ -47,5 +47,5 @@ jobs:
           repo_token: ${{ secrets.GH_PAT }}
           file: PixsBliss.apk
           asset_name: PixsBliss.apk
-          tag: v1.0.1
+          tag: v1.0.2
           overwrite: true 
