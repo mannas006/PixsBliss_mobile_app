@@ -75,6 +75,26 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
     );
   }
 
+  Route _createSettingsRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const SettingsTab(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // Slide from bottom + Fade
+        final slide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+            .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+        final fade = CurvedAnimation(parent: animation, curve: Curves.easeIn);
+        return SlideTransition(
+          position: slide,
+          child: FadeTransition(
+            opacity: fade,
+            child: child,
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 500),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -114,8 +134,8 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
           // Top bar buttons with glassmorphism effect
           if (_selectedIndex != 1)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 2,
-            right: 16,
+            top: MediaQuery.of(context).padding.top + 1,
+            right: 10,
             child: Row(
               children: [
                   // _buildGlassButton(
@@ -131,12 +151,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
                 _buildGlassButton(
                   icon: Icons.settings_rounded,
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      CupertinoPageRoute(
-                        builder: (context) => const SettingsTab(),
-                        settings: const RouteSettings(name: '/settings'),
-                      ),
-                    );
+                    Navigator.of(context, rootNavigator: true).push(_createSettingsRoute());
                   },
                 ),
               ],
