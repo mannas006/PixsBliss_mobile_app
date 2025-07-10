@@ -12,7 +12,12 @@ import '../../../../shared/widgets/update_dialog.dart';
 import '../../../../shared/widgets/download_progress_dialog.dart';
 
 class UpdatePage extends ConsumerStatefulWidget {
-  const UpdatePage({super.key});
+  final UpdateInfo? initialUpdateInfo;
+  
+  const UpdatePage({
+    super.key,
+    this.initialUpdateInfo,
+  });
 
   @override
   ConsumerState<UpdatePage> createState() => _UpdatePageState();
@@ -29,6 +34,11 @@ class _UpdatePageState extends ConsumerState<UpdatePage> {
   void initState() {
     super.initState();
     _loadCurrentVersion();
+    
+    // If update info is provided, use it immediately
+    if (widget.initialUpdateInfo != null) {
+      _updateInfo = widget.initialUpdateInfo;
+    }
   }
 
   Future<void> _loadCurrentVersion() async {

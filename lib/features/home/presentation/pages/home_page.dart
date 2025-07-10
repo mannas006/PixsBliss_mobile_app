@@ -9,8 +9,11 @@ import 'categories_tab.dart';
 import 'local_wallpapers_tab.dart';
 import 'settings_tab.dart';
 import 'search_page.dart';
+import 'update_page.dart';
 import '../../../../core/providers/pexels_provider.dart';
 import '../../../../core/providers/firestore_wallpaper_provider.dart';
+import '../../../../core/services/update_service.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -23,6 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
   late final AnimationController _animationController;
+  bool _hasCheckedForUpdates = false;
   
   @override
   void initState() {
@@ -30,6 +34,153 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
+    );
+    
+    // Check for updates after a short delay to allow the UI to load
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted && !_hasCheckedForUpdates) {
+        _checkForUpdates();
+      }
+    });
+  }
+
+  Future<void> _checkForUpdates() async {
+    if (_hasCheckedForUpdates) return;
+    _hasCheckedForUpdates = true;
+    
+    try {
+      final updateService = UpdateService();
+      final updateInfo = await updateService.checkForUpdate();
+      
+      if (updateInfo != null && mounted) {
+        _showUpdateDialog(updateInfo);
+      }
+    } catch (e) {
+      print('Error checking for updates: $e');
+    }
+  }
+
+  void _showUpdateDialog(UpdateInfo updateInfo) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.system_update,
+              color: AppColors.primary,
+              size: 24.sp,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'Update Available',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Version ${updateInfo.version}',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(height: 12.h),
+            if (updateInfo.changelog.isNotEmpty) ...[
+              Text(
+                'What\'s New:',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).textTheme.titleMedium?.color,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: AppColors.grey100,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  updateInfo.changelog,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: AppColors.grey700,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+            ],
+            Text(
+              'A new version of PixsBliss is available!',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Later',
+              style: TextStyle(
+                color: AppColors.grey600,
+                fontSize: 14.sp,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UpdatePage(initialUpdateInfo: updateInfo),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.update,
+                  size: 16.sp,
+                ),
+                SizedBox(width: 6.w),
+                Text(
+                  'Update Now',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

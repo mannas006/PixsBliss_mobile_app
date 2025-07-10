@@ -245,7 +245,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                     ),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const UpdatePage(),
+                        builder: (context) => const UpdatePage(initialUpdateInfo: null),
                       ),
                     ),
                   ),
