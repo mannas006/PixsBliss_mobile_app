@@ -2,6 +2,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer';
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PremiumService {
   static final PremiumService _instance = PremiumService._internal();
@@ -13,7 +14,7 @@ class PremiumService {
   bool _isInitialized = false;
 
   // Razorpay configuration
-  static const String _razorpayKeyId = 'rzp_test_G189rYNiSIRUzR';
+  static const String _razorpayKeyId = 'rzp_live_j2iRZuhALUmC6O';
 
   final StreamController<String> _unlockController = StreamController.broadcast();
   Stream<String> get unlockStream => _unlockController.stream;
@@ -83,7 +84,7 @@ class PremiumService {
 
   /// Handle successful payment
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    log('Payment successful: [32m${response.paymentId}[0m');
+    log('Payment successful:  [32m${response.paymentId} [0m');
     
     // Get the pending unlock wallpaper ID
     final wallpaperId = _prefs.getString('pending_unlock');
