@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'dart:io';
-import 'package:hive/hive.dart';
 import 'dart:math' as math;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,8 +27,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
   @override
   bool get wantKeepAlive => true;
 
-  String? _cacheSize;
-  bool _isCalculatingCache = false;
   String? _appVersion;
 
   @override
@@ -42,52 +39,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
     final info = await PackageInfo.fromPlatform();
     setState(() {
       _appVersion = '${info.version} (Build ${info.buildNumber})';
-    });
-  }
-
-  Future<void> _calculateCacheSize() async {
-    setState(() {
-      _isCalculatingCache = true;
-      _cacheSize = null;
-    });
-    final boxNames = [
-      'wallpapers',
-      'categories',
-      'pexels_wallpapers',
-      'pexels_trending_wallpapers',
-    ];
-    int totalBytes = 0;
-    for (final boxName in boxNames) {
-      try {
-        final box = await Hive.openBox(boxName);
-        final path = box.path;
-        if (path != null) {
-          final file = File(path);
-          final dir = file.parent;
-          final files = dir.listSync().whereType<File>().where((f) {
-            final fname = f.uri.pathSegments.last;
-            return fname.startsWith(boxName);
-          }).toList();
-          for (final f in files) {
-            if (await f.exists()) {
-              final len = await f.length();
-              totalBytes += len;
-              // Debug print
-              // ignore: avoid_print
-              print('Cache file: \'${f.path}\' size: $len bytes');
-            }
-          }
-        }
-      } catch (e) {
-        // ignore: avoid_print
-        print('Error checking cache for box $boxName: $e');
-      }
-    }
-    // ignore: avoid_print
-    print('Total cache size: $totalBytes bytes');
-    setState(() {
-      _isCalculatingCache = false;
-      _cacheSize = _formatBytes(totalBytes);
     });
   }
 
@@ -387,48 +338,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showClearCacheDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Clear Cache'),
-        content: const Text(
-          'This will clear all cached images and free up storage space. The app may take longer to load images after clearing cache.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _clearCache();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            child: const Text(
-              'Clear Cache',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _clearCache() {
-    // TODO: Implement cache clearing
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Cache cleared successfully'),
-        backgroundColor: AppColors.grey800,
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
