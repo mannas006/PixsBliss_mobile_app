@@ -14,7 +14,7 @@ class PremiumService {
   bool _isInitialized = false;
 
   // Razorpay configuration
-  static const String _razorpayKeyId = 'rzp_live_j2iRZuhALUmC6O';
+  static const String _razorpayKeyId = 'rzp_test_G189rYNiSIRUzR'; //rzp_test_G189rYNiSIRUzR //rzp_live_j2iRZuhALUmC6O
 
   final StreamController<String> _unlockController = StreamController.broadcast();
   Stream<String> get unlockStream => _unlockController.stream;
@@ -47,14 +47,14 @@ class PremiumService {
   }
 
   /// Unlock a wallpaper
-  Future<bool> unlockWallpaper(String wallpaperId, String wallpaperTitle) async {
+  Future<bool> unlockWallpaper(String wallpaperId, String wallpaperTitle, int price) async {
     try {
       if (!_isInitialized) await init();
 
       // Create payment options
       var options = {
         'key': _razorpayKeyId,
-        'amount': 100, // ₹1 = 100 paise
+        'amount': price * 100, // price in rupees to paise
         'name': 'PixsBliss',
         'description': 'Unlock Premium Wallpaper: $wallpaperTitle',
         'timeout': 180, // 3 minutes

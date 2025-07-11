@@ -24,6 +24,8 @@ class Wallpaper extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String source; // 'pexels' or 'local' or 'firestore'
+  final bool isPremium;
+  final int price;
 
   const Wallpaper({
     required this.id,
@@ -47,6 +49,8 @@ class Wallpaper extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     this.source = 'pexels', // Default to pexels
+    this.isPremium = false,
+    this.price = 0,
   });
 
   factory Wallpaper.fromLocalApi(Map<String, dynamic> json) {
@@ -88,6 +92,8 @@ class Wallpaper extends Equatable {
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
       source: 'local', // Mark as local source
+      isPremium: json['isPremium'] as bool? ?? false,
+      price: json['price'] as int? ?? 0,
     );
   }
 
@@ -113,6 +119,8 @@ class Wallpaper extends Equatable {
       status: json['status'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      isPremium: json['isPremium'] as bool? ?? false,
+      price: json['price'] as int? ?? 0,
     );
   }
 
@@ -209,6 +217,8 @@ class Wallpaper extends Equatable {
               : DateTime.parse(json['updatedAt'] as String))
           : DateTime.now(),
       source: 'firestore', // Mark as Firestore source
+      isPremium: json['isPremium'] as bool? ?? false,
+      price: json['price'] as int? ?? 0,
     );
   }
 
@@ -234,6 +244,8 @@ class Wallpaper extends Equatable {
       'status': status,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'isPremium': isPremium,
+      'price': price,
     };
   }
 
@@ -274,6 +286,8 @@ class Wallpaper extends Equatable {
         createdAt,
         updatedAt,
         source,
+        isPremium,
+        price,
       ];
 }
 

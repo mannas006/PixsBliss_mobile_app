@@ -87,12 +87,12 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
     super.dispose();
   }
 
-  bool get _isPremium => widget.wallpaper.featured == true;
+  bool get _isPremium => widget.wallpaper.isPremium == true;
   bool get _canDownload => !_isPremium || _isUnlocked;
 
   String get _buttonText {
     if (_isCheckingUnlockStatus) return 'Loading...';
-    if (_isPremium && !_isUnlocked) return 'Unlock ₹1';
+    if (_isPremium && !_isUnlocked) return 'Unlock for ₹${widget.wallpaper.price}';
     return 'Download';
   }
 
@@ -547,6 +547,7 @@ class _WallpaperDetailPageState extends ConsumerState<WallpaperDetailPage>
       final success = await premiumService.unlockWallpaper(
         widget.wallpaper.id,
         widget.wallpaper.title,
+        widget.wallpaper.price,
       );
       
       if (success) {
