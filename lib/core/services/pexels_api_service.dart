@@ -248,15 +248,6 @@ class PexelsApiService {
         status: 'active',
       ),
       Category(
-        id: 'architecture',
-        name: 'Architecture',
-        slug: 'architecture',
-        color: '#607D8B',
-        featured: true,
-        order: 4,
-        status: 'active',
-      ),
-      Category(
         id: 'cars',
         name: 'Cars',
         slug: 'cars',
@@ -290,15 +281,6 @@ class PexelsApiService {
         color: '#E91E63',
         featured: true,
         order: 8,
-        status: 'active',
-      ),
-      Category(
-        id: 'minimal',
-        name: 'Minimal',
-        slug: 'minimal',
-        color: '#9E9E9E',
-        featured: true,
-        order: 9,
         status: 'active',
       ),
       Category(
