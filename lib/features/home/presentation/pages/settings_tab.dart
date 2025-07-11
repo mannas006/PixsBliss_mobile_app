@@ -181,7 +181,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                       MdiIcons.openInNew,
                       color: AppColors.grey400,
                     ),
-                    onTap: () => _openPrivacyPolicy(),
+                    onTap: () => _launchUrl('https://pixsbliss-app.vercel.app/privacy'),
                   ),
                   _buildSettingsTile(
                     icon: MdiIcons.fileDocument,
@@ -191,7 +191,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                       MdiIcons.openInNew,
                       color: AppColors.grey400,
                     ),
-                    onTap: () => _openTermsOfService(),
+                    onTap: () => _launchUrl('https://pixsbliss-app.vercel.app/terms'),
                   ),
                   _buildSettingsTile(
                     icon: MdiIcons.cancel,
@@ -201,7 +201,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                       MdiIcons.openInNew,
                       color: AppColors.grey400,
                     ),
-                    onTap: () => _openCancellationPolicy(),
+                    onTap: () => _launchUrl('https://pixsbliss-app.vercel.app/refund'),
                   ),
                 ]),
 
@@ -219,7 +219,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
                       MdiIcons.openInNew,
                       color: AppColors.grey400,
                     ),
-                    onTap: () => _contactSupport(),
+                    onTap: () => _launchUrl('https://pixsbliss-app.vercel.app/contact'),
                   ),
                 ]),
 
@@ -433,98 +433,14 @@ class _SettingsTabState extends ConsumerState<SettingsTab>
     );
   }
 
-  void _openPrivacyPolicy() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Privacy Policy'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Privacy Policy for PixsBliss\n\n'
-            'PixsBliss is committed to protecting your privacy. This app does not collect, store, or share any personal information from users.\n\n'
-            '1. Data Collection: PixsBliss does not require you to create an account or provide any personal data.\n'
-            '2. Usage Data: The app may collect anonymous usage statistics to improve user experience, but this data cannot be used to identify you.\n'
-            '3. Third-Party Services: Wallpapers may be sourced from third-party providers (such as Pexels). Please review their privacy policies for more information.\n'
-            '4. Permissions: The app may request permissions (such as storage access) solely to save wallpapers to your device.\n'
-            '5. Children\'s Privacy: PixsBliss does not knowingly collect information from children under 13.\n\n'
-            'By using PixsBliss, you agree to this privacy policy. If you have questions, contact us via the support option in the app.'
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _openTermsOfService() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Terms of Service'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Terms of Service for PixsBliss\n\n'
-            '1. Acceptance: By using PixsBliss, you agree to these terms. If you do not agree, please do not use the app.\n'
-            '2. Personal Use: Wallpapers provided by PixsBliss are for personal, non-commercial use only. You may not redistribute, sell, or use them for commercial purposes.\n'
-            '3. Intellectual Property: All wallpapers remain the property of their respective creators or sources.\n'
-            '4. Content: PixsBliss strives to provide high-quality, appropriate content, but is not responsible for third-party images.\n'
-            '5. Modifications: We may update these terms at any time. Continued use of the app means you accept any changes.\n'
-            '6. Disclaimer: PixsBliss is provided as-is without warranties of any kind.\n\n'
-            'For questions or concerns, please contact us via the support option in the app.'
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _openCancellationPolicy() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Cancellation/Refund Policy'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Cancellation/Refund Policy for PixsBliss\n\n'
-            '1. No Refunds: All purchases made through PixsBliss are final. No refunds will be provided after a wallpaper has been purchased and downloaded.\n\n'
-            '2. Digital Content: Since wallpapers are digital content that can be immediately downloaded and used, we cannot offer refunds once the purchase is completed.\n\n'
-            '3. Purchase Confirmation: Before completing any purchase, please ensure you have selected the correct wallpaper and are satisfied with the preview.\n\n'
-            '4. Technical Issues: If you experience technical difficulties downloading your purchased wallpaper, please contact our support team for assistance.\n\n'
-            '5. Cancellation: You may cancel a purchase before the download begins, but once the wallpaper has been downloaded to your device, the purchase cannot be cancelled.\n\n'
-            '6. Quality Assurance: We strive to provide high-quality wallpapers. If you believe there is a quality issue with your purchase, please contact support within 24 hours.\n\n'
-            '7. Subscription Services: If you have a subscription, you may cancel future billing at any time, but no refunds will be provided for the current billing period.\n\n'
-            'By making a purchase in PixsBliss, you acknowledge and agree to this cancellation and refund policy.'
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _contactSupport() async {
-    final url = Uri.parse('https://madebymanas.me');
+  void _launchUrl(String url) async {
+    final uri = Uri.parse(url);
     try {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (e) {
-      _showInfoMessage('Could not open the website.');
+      _showInfoMessage('Could not open the link.');
     }
   }
-
-
 
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
