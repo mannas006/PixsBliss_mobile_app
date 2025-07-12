@@ -109,6 +109,26 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Google-Mobile-Ads-SDK-GoogleMobileAdsResources.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Google-Mobile-Ads-SDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>GoogleUserMessagingPlatform-UserMessagingPlatformResources.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>GoogleUserMessagingPlatform.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>GoogleUtilities-GoogleUtilities_Privacy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -224,6 +244,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>google_mobile_ads-google_mobile_ads.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>google_mobile_ads.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>leveldb-library-leveldb_Privacy.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -315,6 +345,16 @@
 			<false/>
 		</dict>
 		<key>url_launcher_ios.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>webview_flutter_wkwebview-webview_flutter_wkwebview_privacy.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>webview_flutter_wkwebview.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

@@ -8,6 +8,7 @@ import 'core/constants/app_constants.dart';
 import 'core/services/firestore_service.dart';
 import 'core/services/cache_service.dart';
 import 'core/services/premium_service.dart';
+import 'core/services/admob_service.dart';
 import 'core/providers/wallpaper_provider.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/splash/presentation/pages/splash_screen.dart';
@@ -23,6 +24,9 @@ void main() async {
   // Initialize premium service
   final premiumService = PremiumService();
   await premiumService.init();
+  
+  // Initialize AdMob
+  await AdMobService().initialize();
   
   // Ensure downloads and views fields exist for all wallpapers
   try {

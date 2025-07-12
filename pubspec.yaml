@@ -83,6 +83,9 @@ dependencies:
   package_info_plus: ^8.0.2
   device_info_plus: ^10.1.0
 
+  # AdMob
+  google_mobile_ads: ^5.0.0
+
   # Remove old gallery/image_gallery_saver dependencies
   # gallery_saver: ...
   # image_gallery_saver: ...

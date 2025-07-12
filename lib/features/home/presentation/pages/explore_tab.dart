@@ -5,8 +5,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../core/providers/pexels_provider.dart';
+import '../../../../core/providers/admob_provider.dart';
+import '../../../../shared/widgets/styled_ad_widget.dart';
 import 'enhanced_wallpaper_detail_page.dart';
 
 class ExploreTab extends ConsumerStatefulWidget {
@@ -34,6 +37,11 @@ class _ExploreTabState extends ConsumerState<ExploreTab>
     // Adding a small delay to potentially improve reliability on hot reboot.
     Future.delayed(const Duration(milliseconds: 50), () {
       ref.read(pexelsWallpapersProvider.notifier).loadWallpapers();
+    });
+    
+    // Preload ads for the grid
+    Future.delayed(const Duration(milliseconds: 100), () {
+      ref.read(adMobProvider.notifier).preloadAds(5);
     });
   }
 
@@ -238,12 +246,87 @@ class _ExploreTabState extends ConsumerState<ExploreTab>
     );
   }
 
+  // Build combined list with wallpapers and ads
+  List<dynamic> _buildCombinedList(List<dynamic> wallpapers, AdMobState adMobState) {
+    final List<dynamic> combinedList = [];
+    final adMobNotifier = ref.read(adMobProvider.notifier);
+    
+    for (int i = 0; i < wallpapers.length; i++) {
+      combinedList.add(wallpapers[i]);
+      
+      // Insert ad every 8 items (adjust as needed)
+      if ((i + 1) % 8 == 0 && i < wallpapers.length - 1) {
+        // Try to get a loaded ad, or create a placeholder
+        final ad = adMobNotifier.getAd();
+        if (ad != null) {
+          combinedList.add(ad);
+        } else {
+          // Add a placeholder for ad loading
+          combinedList.add('ad_placeholder');
+        }
+      }
+    }
+    
+    // Preload more ads if we're running low
+    if (adMobState.loadedAdCount < 2 && !adMobState.isPreloading) {
+      Future.microtask(() => adMobNotifier.preloadAds(3));
+    }
+    
+    return combinedList;
+  }
+
+  // Build grid item based on type
+  Widget _buildGridItem(dynamic item, int index, bool isLoading) {
+    if (item is String && item == 'ad_placeholder') {
+      return Padding(
+        padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 300.h,
+          child: StyledAdWidget(
+            isLoading: true,
+          ),
+        ),
+      );
+    } else if (item is BannerAd) {
+      return Padding(
+        padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 300.h,
+          child: StyledAdWidget(
+            ad: item,
+          ),
+        ),
+      );
+    } else {
+      // Regular wallpaper item
+      final wallpaper = item;
+      final size = switch (index % 5) {
+        0 => 1.1,
+        1 => 0.75,
+        2 => 0.9,
+        3 => 0.85,
+        _ => 1.0,
+      };
+      return Padding(
+        padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 300.h * size,
+          child: _buildWallpaperCard(
+            wallpaper,
+            isLarge: false,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     
     final wallpapersState = ref.watch(pexelsWallpapersProvider);
     final trendingState = ref.watch(pexelsTrendingWallpapersProvider);
+    final adMobState = ref.watch(adMobProvider);
     
     // Trigger initial load if the list is empty and not currently loading or in an error state
     if (wallpapersState.wallpapers.isEmpty && !wallpapersState.isLoading && wallpapersState.error == null) {
@@ -324,10 +407,12 @@ class _ExploreTabState extends ConsumerState<ExploreTab>
                   crossAxisCount: 2,
                   mainAxisSpacing: 20.h, // Uniform spacing
                   crossAxisSpacing: 20.w, // Uniform spacing
-                  childCount: newWallpapers.length + (wallpapersState.isLoading ? 1 : 0),
+                  childCount: _buildCombinedList(newWallpapers, adMobState).length + (wallpapersState.isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
-                    if (index >= newWallpapers.length) {
-                      // Remove spinner for loading more, show a shimmer placeholder instead
+                    final combinedList = _buildCombinedList(newWallpapers, adMobState);
+                    
+                    if (index >= combinedList.length) {
+                      // Loading more shimmer placeholder
                       final size = switch (index % 5) {
                         0 => 1.1,
                         1 => 0.75,
@@ -369,24 +454,8 @@ class _ExploreTabState extends ConsumerState<ExploreTab>
                         ),
                       );
                     }
-                    final wallpaper = newWallpapers[index];
-                    final size = switch (index % 5) {
-                      0 => 1.1,
-                      1 => 0.75,
-                      2 => 0.9,
-                      3 => 0.85,
-                      _ => 1.0,
-                    };
-                    return Padding(
-                      padding: EdgeInsets.zero, // Remove extra padding for uniformity
-                      child: SizedBox(
-                        height: 300.h * size,
-                        child: _buildWallpaperCard(
-                          wallpaper,
-                          isLarge: false,
-                        ),
-                      ),
-                    );
+                    
+                    return _buildGridItem(combinedList[index], index, wallpapersState.isLoading);
                   },
                 ),
               ),

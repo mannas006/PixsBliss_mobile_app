@@ -12,10 +12,18 @@ class FirestoreService {
   late FirebaseFirestore _firestore;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    _firestore = FirebaseFirestore.instance;
+    try {
+      // Check if Firebase is already initialized
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+      _firestore = FirebaseFirestore.instance;
+    } catch (e) {
+      // If Firebase is already initialized, just get the instance
+      _firestore = FirebaseFirestore.instance;
+    }
   }
 
   /// Get all wallpapers from Firestore
